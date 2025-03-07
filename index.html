@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shooter</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 3px;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .inputContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .inputContainer input {}
+
+        .choice {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .choice img {
+            width: 70px;
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .buttonContainer {
+            display: flex;
+            gap: 2px;
+            width: 100%;
+        }
+
+        .buttonContainer button {
+            padding: 7px;
+            width: 100%;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #play {
+            background-color: rgb(49, 156, 49);
+        }
+
+        #play:disabled {
+            background-color: rgb(69, 69, 69);
+        }
+
+        #instructionBtn {
+            background-color: rgb(159, 38, 38);
+        }
+
+        .instruction {
+            opacity: 0;
+            position: absolute;
+            right: 10%;
+            background-color: #4c4c4c;
+            color: white;
+            /* padding: 50px; */
+            transition: opacity 0.5s ease;
+        }
+        .instruction.show {
+            opacity: 1;
+        }
+        .instructionContainer{
+            width: 100%;
+            height: 100%;
+            position: relative;
+            padding: 50px;
+        }
+        #closeInstruction{
+            color: white;
+            background: #c82d2d;
+            cursor: pointer;
+            border: none;
+            padding: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            position: absolute;
+            right: 3%;
+            top: 3%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo" style="text-align: center;"><img src="/Sprites/shooter.png" alt=""></div>
+        <div class="inputContainer">
+            <input type="text" placeholder="Input Username" id="username">
+            <select name="diff" id="diff">
+                <option value="" disabled selected>Select your option</option>
+                <option value="easy">Easy</option>
+                <option value="normal">Normal</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+        <div class="choice gunChoice">
+            <label for="gun1">
+                <img src="/Sprites/gun1.png" alt="gun1">
+                <input type="radio" value="gun1" name="a" id="gun1" checked>
+            </label>
+            <label for="gun2">
+                <img src="/Sprites/gun2.png" alt="gun2">
+                <input type="radio" value="gun2" name="a" id="gun2">
+            </label>
+        </div>
+        <div class="choice targetChoice">
+            <label for="target1">
+                <img src="/Sprites/target1.png" alt="target1">
+                <input type="radio" value="target1" name="b" id="target1" checked>
+            </label>
+            <label for="target2">
+                <img src="/Sprites/target2.png" alt="target2">
+                <input type="radio" value="target2" name="b" id="target2">
+            </label>
+            <label for="target3">
+                <img src="/Sprites/target3.png" alt="target3">
+                <input type="radio" value="target3" name="b" id="target3">
+            </label>
+        </div>
+        <div class="buttonContainer">
+            <button id="play" disabled>Play Game</button>
+            <button id="instructionBtn">Instruction</button>
+        </div>
+    </div>
+    <div class="instruction">
+        <div class="instructionContainer">
+            <button id="closeInstruction">X</button>
+            <h1>Instruction</h1>
+            <p>1. asdf asdfasdfasdfa</p>
+            <p>1. asdf asdfasdfasdfa</p>
+            <p>1. asdf asdfasdfasdfa</p>
+            <p>1. asdf asdfasdfasdfa</p>
+        </div>
+    </div>
+    <script>
+
+        const username = document.getElementById('username');
+        const diff = document.getElementById('diff');
+        const play = document.getElementById('play');
+        const instruction = document.querySelector('.instruction')
+        const openIns = document.getElementById('instructionBtn'),
+        closeIns = document.getElementById('closeInstruction')
+
+        openIns.onclick = () => instruction.classList.add('show')
+        closeIns.onclick = () => instruction.classList.remove('show')
+
+        const validateForm = () => {
+            play.disabled = !(
+                username.value &&
+                diff.value &&
+                document.querySelector(".gunChoice input:checked") &&
+                document.querySelector(".targetChoice input:checked")
+            );
+        };
+
+        document.querySelectorAll("#username, #diff, .gunChoice input, .targetChoice input")
+            .forEach(el => el.oninput = validateForm);
+
+        play.onclick = () => {
+            const gunChoice = document.querySelector(".gunChoice input:checked").value;
+            const targetChoice = document.querySelector(".targetChoice input:checked").value;
+            localStorage.setItem('gameSet', JSON.stringify({
+                username: username.value,
+                diff: diff.value,
+                gunSrc: gunChoice+'.png',
+                targetSrc: targetChoice+'.png'
+            }))
+            window.location.href='game.html'
+        };
+
+    </script>
+</body>
+
+</html>
