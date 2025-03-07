@@ -10,6 +10,7 @@ let levelTimeout = {
 	normal: 20,
 	hard: 15,
 }
+
 let isPaused = false
 let targetsPos = [
 	{ x: 100, y: 150 },
@@ -84,7 +85,7 @@ canvas.onmousemove = (e) => {
 	offsetX = e.offsetX
 	offsetY = e.offsetY
 }
-
+let currentTimeout = levelTimeout[diff];
 canvas.onclick = (e) => {
     if (!isPlay) return;
 	if(gunState) return
@@ -103,15 +104,16 @@ canvas.onclick = (e) => {
     });
 
     if (!isHit) {
-        if (levelTimeout[diff] > 5) {
-            levelTimeout[diff] -= 5;
+        if (currentTimeout > 5) {
+            currentTimeout -= 5;
         } else {
-            levelTimeout[diff] = 0;
+            currentTimeout = 0;
         }
     }
 
     setTimeout(() => isBoom = false, 200);
 };
+
 const renderCountdown = setInterval(() => {
 	countEL.textContent = countdown;
 	if (countdown === 0) {
@@ -120,14 +122,16 @@ const renderCountdown = setInterval(() => {
 		countEL.remove();
 
 		const timerInterval = setInterval(() => {
-			if (levelTimeout[diff] <= 0) {
-				levelTimeout[diff] = 0
+			if (currentTimeout <= 0) {
+				currentTimeout = 0
 				clearInterval(timerInterval);
 				isPlay = false;
 				endGame = true
 				renderEndGame()
 			} else {
-				levelTimeout[diff]--
+				if(!isPaused){
+					currentTimeout--
+				}
 			}
 		}, 1000);
 	}
@@ -139,14 +143,14 @@ const renderCountdown = setInterval(() => {
 window.onload = renderCountdown
 
 function renderNavbar() {
-	console.log(levelTimeout[diff])
+	console.log(currentTimeout)
 	c.fillStyle = 'rgba(0,0,0,0.5)'
 	c.fillRect(0, 0, canvas.width, 50)
 	c.fillStyle = 'white'
 	c.font = 'bold 25px Arial'
 	c.fillText(username, 20, 35)
 	c.fillText(`Score: ${score}`, canvas.width / 2.3, 35)
-	c.fillText(`Time: ${levelTimeout[diff]}`, canvas.width - 200, 35)
+	c.fillText(`Time: ${currentTimeout}`, canvas.width - 200, 35)
 }
 
 let gunState = "";
